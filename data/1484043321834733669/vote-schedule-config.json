@@ -1,0 +1,7 @@
+{
+    "enabled": true,
+    "startDay": 1,
+    "startTime": "00:00",
+    "endDay": 5,
+    "endTime": "23:59"
+}
