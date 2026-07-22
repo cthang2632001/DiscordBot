@@ -102,12 +102,19 @@ export const voteSchedulerCommand = {
                 return;
             }
 
+            const channel = interaction.channel;
+            const isThread = channel?.isThread() ?? false;
+            const channelId = isThread ? (channel as any).parentId as string : interaction.channelId!;
+            const threadId = isThread ? channel!.id : undefined;
+
             const config: VoteScheduleConfig = {
                 enabled: true,
                 startDay,
                 startTime,
                 endDay,
-                endTime
+                endTime,
+                channelId,
+                ...(threadId ? { threadId } : {})
             };
 
             const filePath = getVoteScheduleConfigPath(interaction.guildId);
@@ -118,10 +125,12 @@ export const voteSchedulerCommand = {
                 scheduler.restart();
             }
 
+            const location = threadId ? `<#${threadId}>` : `<#${channelId}>`;
             await interaction.reply({
                 content: `✅ Đã cập nhật lịch vote:
 • Mở: ${dayNames[startDay]} ${startTime}
-• Khoá: ${dayNames[endDay]} ${endTime}`,
+• Khoá: ${dayNames[endDay]} ${endTime}
+• Kênh gửi: ${location}`,
                 flags: MessageFlags.Ephemeral
             });
             return;
@@ -150,11 +159,14 @@ export const voteSchedulerCommand = {
             const filePath = getVoteScheduleConfigPath(interaction.guildId);
             const config: VoteScheduleConfig = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
+            const target = config.threadId ? `<#${config.threadId}>` : config.channelId ? `<#${config.channelId}>` : "Chưa cấu hình";
+
             await interaction.reply({
                 content: `📋 **Thời gian Vote Bang Chiến**
 • Trạng thái: ${config.enabled ? "✅ Bật" : "⏸ Tắt"}
 • Mở vote: ${dayNames[config.startDay]} ${config.startTime}
-• Khoá vote: ${dayNames[config.endDay]} ${config.endTime}`,
+• Khoá vote: ${dayNames[config.endDay]} ${config.endTime}
+• Kênh gửi: ${target}`,
                 flags: MessageFlags.Ephemeral
             });
             return;

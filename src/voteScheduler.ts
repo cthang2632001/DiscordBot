@@ -1,8 +1,8 @@
 import cron, { ScheduledTask } from "node-cron";
 import fs from "fs";
-import { TextChannel, Guild } from "discord.js";
+import { TextChannel, Guild, ThreadChannel } from "discord.js";
 import { VoteScheduleConfig } from "./types";
-import { getVotePath, getVoteStatePath, getVoteScheduleConfigPath } from "./utils";
+import { getVotePath, getVoteStatePath, getVoteScheduleConfigPath, getVoteTargetChannel } from "./utils";
 import { buildVoteEmbedFromGuild, buildVoteComponents } from "./voteEmbed";
 import { sendVoteDM, pendingVoteDMs } from "./voteDM";
 import { buildVoteResultEmbeds } from "./commands/voteResult";
@@ -15,12 +15,13 @@ export class VoteScheduler {
 
     private jobs: ScheduledTask[] = [];
     private guild?: Guild;
+    private channel: TextChannel | ThreadChannel | null = null;
 
     constructor(
-        private channel: TextChannel,
+        private defaultChannel: TextChannel,
         private guildId: string
     ) {
-        this.guild = channel.guild;
+        this.guild = defaultChannel.guild;
     }
 
     private clearJobs() {
@@ -33,8 +34,20 @@ export class VoteScheduler {
         return JSON.parse(fs.readFileSync(filePath, "utf8"));
     }
 
+    private async resolveChannel(): Promise<TextChannel | ThreadChannel> {
+        if (this.channel) return this.channel;
+        const config = this.readConfig();
+        const target = await getVoteTargetChannel(this.guild!, config);
+        if (target) {
+            this.channel = target;
+            return target;
+        }
+        return this.defaultChannel;
+    }
+
     public start() {
         this.clearJobs();
+        this.channel = null; // reset cached channel
         const config = this.readConfig();
 
         if (!config.enabled) {
@@ -56,9 +69,11 @@ export class VoteScheduler {
             const statePath = getVoteStatePath(this.guildId);
             fs.writeFileSync(statePath, JSON.stringify({ isOpen: true }, null, 4));
 
+            const target = await this.resolveChannel();
+
             // Gửi vote embed trong channel server
             try {
-                await this.channel.send({
+                await target.send({
                     content: "@everyone",
                     allowedMentions: { parse: ["everyone"] },
                     embeds: [buildVoteEmbedFromGuild(this.guildId)],
@@ -80,7 +95,7 @@ export class VoteScheduler {
                     let sent = 0;
                     for (const [, member] of members) {
                         if (member.user.bot) continue;
-                        await sendVoteDM(member.user, this.guildId, this.channel);
+                        await sendVoteDM(member.user, this.guildId, this.defaultChannel);
                         sent++;
                         if (sent % 5 === 0) {
                             await new Promise(r => setTimeout(r, 1000)); // rate limit
@@ -99,12 +114,14 @@ export class VoteScheduler {
             const statePath = getVoteStatePath(this.guildId);
             fs.writeFileSync(statePath, JSON.stringify({ isOpen: false }, null, 4));
 
+            const target = await this.resolveChannel();
+
             try {
                 const embeds = buildVoteResultEmbeds(this.guildId);
                 if (embeds.length) {
-                    await this.channel.send({ embeds });
+                    await target.send({ embeds });
                 } else {
-                    await this.channel.send("🔒 **Vote Bang Chiến tuần này đã kết thúc!**");
+                    await target.send("🔒 **Vote Bang Chiến tuần này đã kết thúc!**");
                 }
             } catch (error) {
                 console.error(`[${this.guildId}] Lỗi gửi kết quả vote:`, error);
@@ -120,8 +137,10 @@ export class VoteScheduler {
             const statePath = getVoteStatePath(this.guildId);
             fs.writeFileSync(statePath, JSON.stringify({ isOpen: false }, null, 4));
 
+            const target = await this.resolveChannel();
+
             try {
-                await this.channel.send("🧹 **Đã reset vote để chuẩn bị cho tuần mới!**");
+                await target.send("🧹 **Đã reset vote để chuẩn bị cho tuần mới!**");
             } catch (error) {
                 console.error(`[${this.guildId}] Lỗi gửi thông báo reset:`, error);
             }

@@ -4,8 +4,8 @@ import {
     ButtonBuilder,
     ButtonStyle,
     User,
-    Guild,
-    TextChannel
+    TextChannel,
+    ThreadChannel
 } from "discord.js";
 import fs from "fs";
 import { Vote } from "./types";
@@ -42,7 +42,7 @@ export function buildAskComponents() {
     ];
 }
 
-export async function sendVoteDM(user: User, guildId: string, channel: TextChannel) {
+export async function sendVoteDM(user: User, guildId: string, channel: TextChannel | ThreadChannel) {
     try {
         await user.send({
             embeds: [buildAskEmbed()],

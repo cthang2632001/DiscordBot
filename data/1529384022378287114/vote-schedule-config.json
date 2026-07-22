@@ -1,7 +1,8 @@
 {
     "enabled": true,
     "startDay": 3,
-    "startTime": "14:13",
+    "startTime": "15:08",
     "endDay": 3,
-    "endTime": "14:14"
+    "endTime": "15:09",
+    "channelId": "1529384023334453332"
 }

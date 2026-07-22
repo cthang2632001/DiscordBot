@@ -11,6 +11,8 @@ import path from "path";
 import { registerInteractions } from "./interactionCreate";
 import { Scheduler, schedulerManager } from "./scheduler";
 import { VoteScheduler, voteSchedulerManager } from "./voteScheduler";
+import { VoteScheduleConfig } from "./types";
+import { getVoteScheduleConfigPath, getVoteTargetChannel } from "./utils";
 import { deployCommands } from "./deploy-commands";
 
 dotenv.config();
@@ -109,7 +111,22 @@ async function initializeVoteScheduler(guildId: string) {
 
     try {
         const guild = await client.guilds.fetch(guildId);
-        const channel = await findDefaultTextChannel(guild);
+
+        // Thử lấy channel từ config trước
+        let channel: TextChannel | null = null;
+        try {
+            const config: VoteScheduleConfig = JSON.parse(
+                fs.readFileSync(getVoteScheduleConfigPath(guildId), "utf8")
+            );
+            const target = await getVoteTargetChannel(guild, config);
+            if (target) {
+                channel = target instanceof TextChannel ? target : (target.parent as TextChannel);
+            }
+        } catch { /* fallback */ }
+
+        if (!channel) {
+            channel = await findDefaultTextChannel(guild);
+        }
 
         if (!channel) {
             console.log(`❌ [${guildId}] Không tìm thấy text channel cho vote scheduler`);

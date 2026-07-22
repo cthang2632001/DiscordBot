@@ -26,4 +26,6 @@ export interface VoteScheduleConfig {
     startTime: string; // HH:mm
     endDay: number;
     endTime: string;
+    channelId?: string;
+    threadId?: string;
 }
