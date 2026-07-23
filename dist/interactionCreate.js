@@ -11,9 +11,6 @@ const addschedule_1 = require("./commands/addschedule");
 const deleteschedule_1 = require("./commands/deleteschedule");
 const listschedule_1 = require("./commands/listschedule");
 const editschedule_1 = require("./commands/editschedule");
-const play_1 = require("./commands/play");
-const stop_1 = require("./commands/stop");
-const next_1 = require("./commands/next");
 const voteBC_1 = require("./commands/voteBC");
 const voteResult_1 = require("./commands/voteResult");
 const voteReset_1 = require("./commands/voteReset");
@@ -168,15 +165,6 @@ function registerInteractions(client) {
                 break;
             case "editschedule":
                 await editschedule_1.editScheduleCommand.execute(interaction);
-                break;
-            case "play":
-                await play_1.playCommand.execute(interaction);
-                break;
-            case "stop":
-                await stop_1.stopCommand.execute(interaction);
-                break;
-            case "next":
-                await next_1.nextCommand.execute(interaction);
                 break;
             case "votebc":
                 await voteBC_1.voteBCCommand.execute(interaction);

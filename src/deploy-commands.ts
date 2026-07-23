@@ -11,9 +11,7 @@ import { addScheduleCommand } from "./commands/addschedule";
 import { deleteScheduleCommand } from "./commands/deleteschedule";
 import { listScheduleCommand } from "./commands/listschedule";
 import { editScheduleCommand } from "./commands/editschedule";
-import { playCommand } from "./commands/play";
-import { stopCommand } from "./commands/stop";
-import { nextCommand } from "./commands/next";
+
 import { voteBCCommand } from "./commands/voteBC";
 import { voteResultCommand } from "./commands/voteResult";
 import { voteResetCommand } from "./commands/voteReset";
@@ -24,9 +22,7 @@ const commands = [
     deleteScheduleCommand.data.toJSON(),
     listScheduleCommand.data.toJSON(),
     editScheduleCommand.data.toJSON(),
-    playCommand.data.toJSON(),
-    stopCommand.data.toJSON(),
-    nextCommand.data.toJSON(),
+
     voteBCCommand.data.toJSON(),
     voteResultCommand.data.toJSON(),
     voteResetCommand.data.toJSON(),

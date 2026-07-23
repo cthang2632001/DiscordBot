@@ -14,7 +14,7 @@ const utils_1 = require("./utils");
 const deploy_commands_1 = require("./deploy-commands");
 dotenv_1.default.config();
 const client = new discord_js_1.Client({
-    intents: [discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.GuildMessages, discord_js_1.GatewayIntentBits.GuildVoiceStates, discord_js_1.GatewayIntentBits.GuildMembers]
+    intents: [discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.GuildMessages, discord_js_1.GatewayIntentBits.GuildMembers]
 });
 (0, interactionCreate_1.registerInteractions)(client);
 client.once("clientReady", async (client) => {

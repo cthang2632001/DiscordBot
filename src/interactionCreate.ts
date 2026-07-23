@@ -12,9 +12,7 @@ import { addScheduleCommand } from "./commands/addschedule";
 import { deleteScheduleCommand } from "./commands/deleteschedule";
 import { listScheduleCommand } from "./commands/listschedule";
 import { editScheduleCommand } from "./commands/editschedule";
-import { playCommand } from "./commands/play";
-import { stopCommand } from "./commands/stop";
-import { nextCommand } from "./commands/next";
+
 import { voteBCCommand } from "./commands/voteBC";
 import { voteResultCommand } from "./commands/voteResult";
 import { voteResetCommand } from "./commands/voteReset";
@@ -208,17 +206,7 @@ export function registerInteractions(client: Client) {
                 await editScheduleCommand.execute(interaction);
                 break;
 
-            case "play":
-                await playCommand.execute(interaction);
-                break;
 
-            case "stop":
-                await stopCommand.execute(interaction);
-                break;
-
-            case "next":
-                await nextCommand.execute(interaction);
-                break;
             case "votebc":
                 await voteBCCommand.execute(interaction);
                 break;

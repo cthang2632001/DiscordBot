@@ -12,9 +12,6 @@ const addschedule_1 = require("./commands/addschedule");
 const deleteschedule_1 = require("./commands/deleteschedule");
 const listschedule_1 = require("./commands/listschedule");
 const editschedule_1 = require("./commands/editschedule");
-const play_1 = require("./commands/play");
-const stop_1 = require("./commands/stop");
-const next_1 = require("./commands/next");
 const voteBC_1 = require("./commands/voteBC");
 const voteResult_1 = require("./commands/voteResult");
 const voteReset_1 = require("./commands/voteReset");
@@ -25,9 +22,6 @@ const commands = [
     deleteschedule_1.deleteScheduleCommand.data.toJSON(),
     listschedule_1.listScheduleCommand.data.toJSON(),
     editschedule_1.editScheduleCommand.data.toJSON(),
-    play_1.playCommand.data.toJSON(),
-    stop_1.stopCommand.data.toJSON(),
-    next_1.nextCommand.data.toJSON(),
     voteBC_1.voteBCCommand.data.toJSON(),
     voteResult_1.voteResultCommand.data.toJSON(),
     voteReset_1.voteResetCommand.data.toJSON(),
